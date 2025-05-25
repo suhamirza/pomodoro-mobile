@@ -1,15 +1,25 @@
+import { Settings } from '@/components/Settings';
 import { ThemedView } from '@/components/ThemedView';
-import { TimerSettings } from '@/components/TimerSettings';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import React from 'react';
+import { Stack } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme();
+  
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]}> 
-      <TimerSettings hideTitle />
+    <ThemedView style={styles.container}>
+      <Stack.Screen 
+        options={{ 
+          title: 'Settings',
+          headerStyle: {
+            backgroundColor: Colors[colorScheme].background,
+          },
+          headerTintColor: Colors[colorScheme].primary,
+        }} 
+      />
+      <Settings />
     </ThemedView>
   );
 }
@@ -17,6 +27,5 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
 });

@@ -18,6 +18,7 @@ export default function TabLayout() {
           elevation: 0,
           height: 60,
           paddingBottom: 8,
+          marginBottom: 10,
         },
         tabBarActiveTintColor: Colors[colorScheme].primary,
         tabBarInactiveTintColor: Colors[colorScheme].secondary,
@@ -27,7 +28,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Pomodoro',
+          title: 'pomodoro',
           headerStyle: {
             backgroundColor: Colors[colorScheme].background,
             minHeight: 120,
@@ -37,25 +38,27 @@ export default function TabLayout() {
               flex: 1,
               minHeight: 80,
               backgroundColor: Colors[colorScheme].background,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.18,
-              shadowRadius: 16,
+              borderBottomWidth: 0.5,
+              borderBottomColor: Colors[colorScheme].secondary + '80',
+              shadowColor: Colors[colorScheme].primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
               elevation: 15,
             }} />
           ),
           headerTitleStyle: {
-            fontSize: 32,
-            fontWeight: 'bold',
+            fontSize: 24,
+            fontWeight: '400',
             letterSpacing: 2,
             textTransform: 'lowercase',
             color: '#FFFFFF',
-            fontFamily: 'Montserrat_700Bold',
+            fontFamily: 'Montserrat_600SemiBold',
+            textShadowColor: Colors[colorScheme].primary,
+            textShadowOffset: { width: 0, height: 1 },
+            textShadowRadius: 6,
           },
-          headerTitleAlign: 'left',
-          headerTitleContainerStyle: {
-            paddingLeft: 24,
-          },
+          headerTitleAlign: 'center',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time-outline" size={size ?? 24} color={color} />
           ),
