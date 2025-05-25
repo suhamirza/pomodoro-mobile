@@ -14,8 +14,23 @@ export default function SettingsScreen() {
         options={{ 
           title: 'Settings',
           headerStyle: {
-            backgroundColor: Colors[colorScheme].background,
+            backgroundColor: Colors[colorScheme].background, 
+            borderBottomWidth: 0.5,
+            borderBottomColor: Colors[colorScheme].secondary + '80',
           },
+        
+          headerTitleStyle: {
+                      fontSize: 24,
+                      fontWeight: '400',
+                      letterSpacing: 2,
+                      textTransform: 'lowercase',
+                      color: '#FFFFFF',
+                      fontFamily: 'Montserrat_600SemiBold',
+                      textShadowColor: Colors[colorScheme].primary,
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 6,
+                    },
+                    
           headerTintColor: Colors[colorScheme].primary,
         }} 
       />

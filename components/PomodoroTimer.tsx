@@ -173,12 +173,13 @@ export function PomodoroTimer() {
         throw new Error('Sound not loaded');
       }
 
-      if (isAudioPlaying) {
+      if (status.isPlaying) {
         await ambientSoundRef.current.pauseAsync();
+        setIsAudioPlaying(false);
       } else {
         await ambientSoundRef.current.playAsync();
+        setIsAudioPlaying(true);
       }
-      setIsAudioPlaying(!isAudioPlaying);
     } catch (error) {
       console.log('Error toggling playback:', error);
       // Reset state on error
@@ -423,7 +424,7 @@ export function PomodoroTimer() {
                 toggleAudioPlayback();
               }}
               disabled={!ambientSound}>
-              <Text style={styles.playButtonText}>
+              <Text style={styles.playButtonText, { color: '#fff' }}>
                 {isAudioPlaying ? '❙❙' : '▶'}
               </Text>
             </TouchableOpacity>

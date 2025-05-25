@@ -308,6 +308,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#2c1120', // Hot pink
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#321f29'
   },
   dropdownText: {
     color: '#FFFFFF',

@@ -3,24 +3,21 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Slider from '@react-native-community/slider';
 import React from 'react';
-import { StyleSheet, Switch, View } from 'react-native';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { ThemedText } from './ThemedText';
 
-export function Settings() {
-  const {
+export function Settings() {  const {
     soundEnabled,
-    setSoundEnabled,
     vibrationEnabled,
-    setVibrationEnabled,
-    isDarkMode,
-    setIsDarkMode,
     focusTime,
-    setFocusTime,
     shortBreakTime,
-    setShortBreakTime,
     longBreakTime,
-    setLongBreakTime,
+    toggleSound,
+    toggleVibration,
+    updateFocusTime,
+    updateShortBreakTime,
+    updateLongBreakTime,
   } = useSettings();
 
   const colorScheme = useColorScheme() ?? 'light';
@@ -77,14 +74,13 @@ export function Settings() {
       </View>
     </View>
   );
-
   return (
-    <View style={styles.content}>
+    <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Timer Settings</ThemedText>
-        {renderTimeSlider('Focus Duration', focusTime, setFocusTime, 1, 60)}
-        {renderTimeSlider('Short Break Duration', shortBreakTime, setShortBreakTime, 1, 30)}
-        {renderTimeSlider('Long Break Duration', longBreakTime, setLongBreakTime, 1, 45)}
+        {renderTimeSlider('Focus Duration', focusTime, updateFocusTime, 1, 60)}
+        {renderTimeSlider('Short Break Duration', shortBreakTime, updateShortBreakTime, 1, 30)}
+        {renderTimeSlider('Long Break Duration', longBreakTime, updateLongBreakTime, 1, 45)}
       </View>
 
       <View style={styles.section}>
@@ -92,23 +88,16 @@ export function Settings() {
         {renderSettingItem(
           'Sound',
           soundEnabled,
-          setSoundEnabled,
+          toggleSound,
           'Play sound when timer completes'
         )}
         {renderSettingItem(
           'Vibration',
           vibrationEnabled,
-          setVibrationEnabled,
+          toggleVibration,
           'Vibrate when timer completes'
-        )}
-        {renderSettingItem(
-          'Dark Mode',
-          isDarkMode,
-          setIsDarkMode,
-          'Switch between light and dark themes'
-        )}
-      </View>
-    </View>
+        )}      </View>
+    </ScrollView>
   );
 }
 
