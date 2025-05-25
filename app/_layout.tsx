@@ -1,5 +1,18 @@
+import {
+  Montserrat_100Thin,
+  Montserrat_200ExtraLight,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_800ExtraBold,
+  Montserrat_900Black,
+  useFonts,
+} from '@expo-google-fonts/montserrat';
+import { ShareTech_400Regular } from '@expo-google-fonts/share-tech';
+import { Sniglet_800ExtraBold } from '@expo-google-fonts/sniglet';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
@@ -9,7 +22,17 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Montserrat_100Thin,
+    Montserrat_200ExtraLight,
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+    Montserrat_800ExtraBold,
+    Montserrat_900Black,
+    ShareTech_400Regular,
+    Sniglet_800ExtraBold,
   });
 
   if (!loaded) {
