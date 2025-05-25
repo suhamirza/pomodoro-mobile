@@ -2,10 +2,11 @@ import { Colors } from '@/constants/Colors';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Slider from '@react-native-community/slider';
+import { useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import * as Device from 'expo-device';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Modal, Text, TouchableOpacity, Vibration, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, LayoutAnimation, Modal, Text, TouchableOpacity, Vibration, View } from 'react-native';
 
 import { styles } from './PomodoroTimer.styles';
 import { ThemedText } from './ThemedText';
@@ -56,7 +57,12 @@ export function PomodoroTimer() {
   const [isMinimized, setIsMinimized] = useState(false);
   const colorScheme = useColorScheme() ?? 'light';
   const ambientSoundRef = useRef<Audio.Sound | null>(null);
-  const animatedHeight = useRef(new Animated.Value(220)).current;
+  const fadeAnims = {
+    timer: useRef(new Animated.Value(0)).current,
+    progress: useRef(new Animated.Value(0)).current,
+    controls: useRef(new Animated.Value(0)).current,
+    audioPlayer: useRef(new Animated.Value(0)).current
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -314,13 +320,10 @@ export function PomodoroTimer() {
     );
   };
 
-  useEffect(() => {
-    Animated.timing(animatedHeight, {
-      toValue: isMinimized ? 60 : 140,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [isMinimized]);
+  const toggleMinimized = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsMinimized(!isMinimized);
+  };
 
   // Add this effect to update timer when settings change
   useEffect(() => {
@@ -334,9 +337,44 @@ export function PomodoroTimer() {
     }
   }, [focusTime, shortBreakTime, longBreakTime]);
 
+  // Reset and play animations when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      // Reset animation values
+      fadeAnims.timer.setValue(0);
+      fadeAnims.progress.setValue(0);
+      fadeAnims.controls.setValue(0);
+      fadeAnims.audioPlayer.setValue(0);
+
+      // Play animations
+      Animated.stagger(150, [
+        Animated.timing(fadeAnims.timer, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnims.progress, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnims.controls, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnims.audioPlayer, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, [])
+  );
+
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.timerRow}>
+      <Animated.View style={[styles.timerRow, { opacity: fadeAnims.timer }]}>
         <TouchableOpacity 
           style={[styles.adjustButton, { backgroundColor: Colors[colorScheme].secondary }]}
           onPress={() => adjustTime(-2)}>
@@ -363,9 +401,12 @@ export function PomodoroTimer() {
           onPress={() => adjustTime(2)}>
           <Text style={styles.adjustButtonText}>+</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
-      <View style={styles.progressContainer}>
+      <Animated.View style={[
+        styles.progressContainer,
+        { opacity: fadeAnims.progress }
+      ]}>
         {[...Array(4)].map((_, index) => (
           <View
             key={index}
@@ -380,9 +421,20 @@ export function PomodoroTimer() {
             ]}
           />
         ))}
-      </View>
+      </Animated.View>
 
-      <View style={styles.controlsRow}>
+      <Animated.View style={[
+        styles.controlsRow,
+        { 
+          opacity: fadeAnims.controls,
+          transform: [{
+            translateY: fadeAnims.controls.interpolate({
+              inputRange: [0, 1],
+              outputRange: [20, 0],
+            })
+          }]
+        }
+      ]}>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: Colors[colorScheme].primary }]}
           onPress={toggleTimer}>
@@ -395,13 +447,19 @@ export function PomodoroTimer() {
           onPress={resetTimer}>
           <ThemedText style={styles.buttonText}>Reset</ThemedText>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
       <Animated.View style={[
         styles.bottomContainer,
         {
-          height: animatedHeight,
-          transform: [{ translateY: isMinimized ? 8 : 0 }],
+          opacity: fadeAnims.audioPlayer,
+          transform: [{
+            translateY: fadeAnims.audioPlayer.interpolate({
+              inputRange: [0, 1],
+              outputRange: [20, 0],
+            })
+          }],
+          height: isMinimized ? 60 : 140 // Static height based on state
         }
       ]}>
         <TouchableOpacity
@@ -429,7 +487,7 @@ export function PomodoroTimer() {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setIsMinimized(!isMinimized)}
+              onPress={toggleMinimized}
               style={styles.dropdownButton}>
               <Text style={styles.dropdownText}>▼</Text>
             </TouchableOpacity>

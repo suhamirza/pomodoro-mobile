@@ -15,28 +15,29 @@ export function Splash() {
   const buttonAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Sequential animations
-    Animated.sequence([
-      // Logo animation
-      Animated.timing(logoAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
+    // Sequential animations with faster timing and button moved up
+    Animated.stagger(100, [
+      // Logo and button animations together
+      Animated.parallel([
+        Animated.timing(logoAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
       // Title animation
       Animated.timing(titleAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 600,
         useNativeDriver: true,
       }),
       // Description animation
       Animated.timing(descAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      // Button animation
-      Animated.timing(buttonAnim, {
         toValue: 1,
         duration: 600,
         useNativeDriver: true,
