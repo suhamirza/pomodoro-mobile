@@ -15,6 +15,7 @@ import { Sniglet_800ExtraBold } from '@expo-google-fonts/sniglet';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 import 'react-native-reanimated';
 
 import { SettingsProvider } from '@/contexts/SettingsContext';
@@ -39,19 +40,29 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    return null;
+    return (
+      <View style={{ 
+        flex: 1, 
+        backgroundColor: '#251023' 
+      }} />
+    );
   }
 
   return (
     <SettingsProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="light" />
-      </ThemeProvider>
+      <View style={{ flex: 1, backgroundColor: '#251023' }}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{ 
+            headerShown: false,
+            contentStyle: { backgroundColor: '#251023' }
+          }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="light" />
+        </ThemeProvider>
+      </View>
     </SettingsProvider>
   );
 }

@@ -7,9 +7,10 @@
     "icon": "./assets/images/logo.png",
     "scheme": "pomello",
     "userInterfaceStyle": "dark",
+    "backgroundColor": "#251023",
     "splash": {
       "image": "./assets/images/logo.png",
-      "backgroundColor": "#2c1120",
+      "backgroundColor": "#251023",
       "resizeMode": "contain"
     },
     "assetBundlePatterns": [
@@ -37,7 +38,9 @@
       "typedRoutes": true
     },
     "androidStatusBar": {
-      "translucent": true
+      "backgroundColor": "#251023",
+      "translucent": true,
+      "style": "light"
     }
   }
 }

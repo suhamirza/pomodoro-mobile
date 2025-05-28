@@ -2,12 +2,14 @@ import { Colors } from '@/constants/Colors';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Slider from '@react-native-community/slider';
-import React from 'react';
-import { ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { ThemedText } from './ThemedText';
 
-export function Settings() {  const {
+export function Settings() {
+  const {
     soundEnabled,
     vibrationEnabled,
     focusTime,
@@ -22,6 +24,33 @@ export function Settings() {  const {
 
   const colorScheme = useColorScheme() ?? 'light';
 
+  const fadeAnims = {
+    timerSection: useRef(new Animated.Value(0)).current,
+    generalSection: useRef(new Animated.Value(0)).current,
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Reset animation values
+      fadeAnims.timerSection.setValue(0);
+      fadeAnims.generalSection.setValue(0);
+
+      // Play animations
+      Animated.stagger(200, [
+        Animated.timing(fadeAnims.timerSection, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnims.generalSection, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, [])
+  );
+
   const renderSettingItem = (
     label: string,
     value: boolean,
@@ -34,9 +63,9 @@ export function Settings() {  const {
         <Switch
           value={value}
           onValueChange={onToggle}
-          trackColor={{ 
+          trackColor={{
             false: Colors[colorScheme].secondary + '40',
-            true: Colors[colorScheme].primary 
+            true: Colors[colorScheme].primary,
           }}
           thumbColor={Colors[colorScheme].text}
         />
@@ -76,14 +105,56 @@ export function Settings() {  const {
   );
   return (
     <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-      <View style={styles.section}>
+      <Animated.View
+        style={[
+          styles.section,
+          {
+            opacity: fadeAnims.timerSection,
+            transform: [
+              {
+                translateY: fadeAnims.timerSection.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
         <ThemedText style={styles.sectionTitle}>Timer Settings</ThemedText>
         {renderTimeSlider('Focus Duration', focusTime, updateFocusTime, 1, 60)}
-        {renderTimeSlider('Short Break Duration', shortBreakTime, updateShortBreakTime, 1, 30)}
-        {renderTimeSlider('Long Break Duration', longBreakTime, updateLongBreakTime, 1, 45)}
-      </View>
+        {renderTimeSlider(
+          'Short Break Duration',
+          shortBreakTime,
+          updateShortBreakTime,
+          1,
+          30
+        )}
+        {renderTimeSlider(
+          'Long Break Duration',
+          longBreakTime,
+          updateLongBreakTime,
+          1,
+          45
+        )}
+      </Animated.View>
 
-      <View style={styles.section}>
+      <Animated.View
+        style={[
+          styles.section,
+          {
+            opacity: fadeAnims.generalSection,
+            transform: [
+              {
+                translateY: fadeAnims.generalSection.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
         <ThemedText style={styles.sectionTitle}>General Settings</ThemedText>
         {renderSettingItem(
           'Sound',
@@ -96,7 +167,8 @@ export function Settings() {  const {
           vibrationEnabled,
           toggleVibration,
           'Vibrate when timer completes'
-        )}      </View>
+        )}
+      </Animated.View>
     </ScrollView>
   );
 }
